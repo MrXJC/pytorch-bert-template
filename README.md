@@ -7,5 +7,6 @@ Now, it just support the `NLC` (Natural Language Classification), `NLI` (Natural
 
 - [ ] rename trainer to agent
 - [ ] finish the document
+- [ ] finish the ParameterSearch Function.
 - [ ] realize the NER
 - [ ] realize the Machine Comprehension
