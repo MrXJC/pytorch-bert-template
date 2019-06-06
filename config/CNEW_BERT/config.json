@@ -1,0 +1,66 @@
+{
+    "n_gpu": 1,
+    "seed" : 28,
+    "Processor": {
+        "type": "CnewsProcessor",
+        "args": {
+            "data_name":  "cnews",
+            "bert_vocab_file": "bert-base-chinese",
+            "data_path":  "train.tsv",
+            "test_split": 0.2,
+            "max_len": 50,
+            "query_max_len": 20,
+            "target_max_len": 20,
+            "do_lower_case" : true
+        }
+    },
+    "data_loader": {
+        "type": "BertDataLoader",
+        "args": {
+            "batch_size": 128,
+            "shuffle": true,
+            "validation_split": 0.2,
+            "num_workers": 2
+        }
+    },
+
+    "arch": {
+        "type": "BertOrigin",
+        "args": {
+            "pretrained_model_name_or_path": "bert-base-chinese"
+        }
+    },
+
+
+    "optimizer": {
+        "type": "BertAdam",
+        "args":{
+                "lr"  : 5e-5,
+            "warmup"  : 0.1 ,
+            "schedule": "warmup_linear"
+        }
+    },
+    "loss": {
+        "type": "cross_entropy_loss",
+        "args": {
+            "weights": [1.01, 4.01]
+        }
+    },
+
+    "metrics": [
+        "acc"
+    ],
+
+    "trainer": {
+        "epochs": 1,
+
+        "save_dir": "saved/",
+        "save_period": 1,
+        "verbosity": 2,
+        
+        "monitor": "max val_acc",
+        "early_stop": 10,
+        "gradient_accumulation_steps": 1,
+        "tensorboardX": true
+    }
+}
