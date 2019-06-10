@@ -4,7 +4,7 @@ import torch
 from base import BaseAgent
 import agent.loss as module_loss
 import agent.metric as module_metric
-from agent.optimizer import BertOptimizer
+from agent.optimizer import bert_optimizer
 
 
 class Agent(BaseAgent):
@@ -32,7 +32,7 @@ class Agent(BaseAgent):
 
         if self.do_train:
             self.log_step = int(np.sqrt(data_loader.batch_size))
-            self.optimizer = BertOptimizer(model, config, data_loader)
+            self.optimizer = bert_optimizer(model, config, data_loader)
 
         if config.resume is not None:
             self.best_path = config.resume
@@ -69,16 +69,24 @@ class Agent(BaseAgent):
         total_metrics = np.zeros(len(self.metrics))
 
         for batch_idx, batch in enumerate(self.data_loader):
-            self.optimizer.zero_grad()
+
             output, label_ids = self._predict(batch)
             loss = self.loss(output, label_ids)
+
+            if self.config.gradient_accumulation_steps > 1:
+                loss = loss / self.config.gradient_accumulation_steps
+
             loss.backward()
-            self.optimizer.step()
+
             self.writer.set_step((epoch - 1) * len(self.data_loader) + batch_idx)
             self.writer.add_scalar('loss', loss.item())
             total_loss += loss.item()
             now_metrics = self._eval_metrics(output, label_ids)
             total_metrics += now_metrics
+
+            if (batch_idx + 1) % self.config.gradient_accumulation_steps == 0:
+                self.optimizer.step()
+                self.optimizer.zero_grad()
 
             if batch_idx % self.log_step == 0:
                 metric_str =''

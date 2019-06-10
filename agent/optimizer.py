@@ -1,13 +1,13 @@
 import pytorch_pretrained_bert
 
 
-def BertOptimizer(model, config, data_loader):
+def bert_optimizer(model, config, data_loader):
     # # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
     num_train_optimization_steps = int(
-        data_loader.n_samples / data_loader.batch_size / config['trainer']['gradient_accumulation_steps'] *
+        data_loader.n_samples / data_loader.batch_size / config.gradient_accumulation_steps *
         config['trainer']['epochs'])
 
-    print(data_loader.n_samples, data_loader.batch_size, config['trainer']['gradient_accumulation_steps'],
+    print(data_loader.n_samples, data_loader.batch_size, config.gradient_accumulation_steps,
           config['trainer']['epochs'])
     # start = False
     # for name, param in model.named_parameters():
