@@ -5,7 +5,7 @@ import data_loader.processor as module_processor
 from parse_config import ConfigParser
 import model.model as module_arch
 from pytorch_pretrained_bert.modeling import BertConfig
-from trainer import Trainer
+from agent import Agent
 
 
 # /opt/xujc/Projects/PycharmProjects/DeepLearning/NLP/Bert/BertESIM
@@ -32,14 +32,14 @@ def train(config):
         model = config.initialize_bert_model('arch', module_arch, num_labels = processor.nums_label())
 
     logger.info(model)
-    trainer = Trainer(model,
+    agent = Agent(model,
                       config=config,
                       data_loader=data_loader,
                       valid_data_loader=valid_data_loader,
                       test_data_loader=test_data_loader)
 
-    trainer.train()
-    trainer.test()
+    agent.train()
+    agent.test()
 
 
 if __name__ == '__main__':

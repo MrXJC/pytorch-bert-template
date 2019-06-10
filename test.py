@@ -3,7 +3,7 @@ import data_loader.data_loaders as module_data
 import data_loader.processor as module_processor
 from parse_config import ConfigParser
 import model.model as module_arch
-from trainer import Trainer
+from agent import Agent
 from pytorch_pretrained_bert.modeling import BertConfig
 
 
@@ -20,8 +20,8 @@ def test(config):
     else:
         model = config.initialize_bert_model('arch', module_arch, num_labels=processor.nums_label())
     logger.info(model)
-    trainer = Trainer(model, config=config, test_data_loader=test_data_loader)
-    return trainer.test()
+    agent = Agent(model, config=config, test_data_loader=test_data_loader)
+    return agent.test()
 
 
 if __name__ == '__main__':

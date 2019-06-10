@@ -1,21 +1,22 @@
 import numpy as np
 import time
 import torch
-from base import BaseTrainer
-import trainer.loss as module_loss
-import trainer.metric as module_metric
-from trainer.optimizer import BertOptimizer
+from base import BaseAgent
+import agent.loss as module_loss
+import agent.metric as module_metric
+from agent.optimizer import BertOptimizer
 
-class Trainer(BaseTrainer):
+
+class Agent(BaseAgent):
     """
     Trainer class
 
     Note:
         Inherited from BaseTrainer.
     """
-    def __init__(self, model, optimizer=None, config=None,
+    def __init__(self, model, config=None,
                  data_loader =None, valid_data_loader=None, test_data_loader=None, lr_scheduler=None):
-        super().__init__(model, optimizer, config)
+        super().__init__(model, config)
         self.config = config
         self.data_loader = data_loader
         self.valid_data_loader = valid_data_loader

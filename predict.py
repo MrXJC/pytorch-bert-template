@@ -4,9 +4,7 @@ import data_loader.processor as module_processor
 from pytorch_pretrained_bert.modeling import BertConfig
 import model.model as module_arch
 from parse_config import ConfigParser
-from trainer import Trainer
-import sys
-
+from agent import Agent
 
 def predict(config, s1, s2):
     logger = config.get_logger('test')
@@ -19,11 +17,11 @@ def predict(config, s1, s2):
     else:
         model = config.initialize_bert_model('arch', module_arch, num_labels=processor.nums_label())
     #logger.info(model)
-    trainer = Trainer(model, config=config)
+    agent = Agent(model, config=config)
 
     batch = processor.handle_bert_on_batch(s1, s2)
     print(batch)
-    print(trainer.predict(batch))
+    print(agent.predict(batch))
 
 
 if __name__ == '__main__':

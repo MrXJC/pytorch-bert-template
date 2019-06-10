@@ -101,7 +101,10 @@ ENV/
 .mypy_cache/
 
 # input data, saved log, checkpoints
-# data/
+data/
+!data/ATEC/RAW/resource*
+!data/cnews/RAW/resource*
+
 input/
 saved/
 datasets/

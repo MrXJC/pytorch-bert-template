@@ -4,11 +4,11 @@ from abc import abstractmethod
 from numpy import inf
 from logger import WriterTensorboardX
 
-class BaseTrainer:
+class BaseAgent:
     """
     Base class for all trainers
     """
-    def __init__(self, model, optimizer, config):
+    def __init__(self, model, config):
         self.config = config
         self.logger = config.get_logger('trainer', config['trainer']['verbosity'])
 
