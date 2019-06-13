@@ -1,14 +1,13 @@
 import pytorch_pretrained_bert
-
+import math
 
 def bert_optimizer(model, config, data_loader):
     # # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
-    num_train_optimization_steps = int(
-        data_loader.n_samples / data_loader.batch_size / config.gradient_accumulation_steps *
-        config['trainer']['epochs'])
+    num_train_optimization_steps = int(math.ceil(data_loader.n_samples / data_loader.batch_size + 0.5) / config.gradient_accumulation_steps)\
+                                   *config['trainer']['epochs']
 
     print(data_loader.n_samples, data_loader.batch_size, config.gradient_accumulation_steps,
-          config['trainer']['epochs'])
+          config['trainer']['epochs'], num_train_optimization_steps)
     # start = False
     # for name, param in model.named_parameters():
     #     if "11" in name:

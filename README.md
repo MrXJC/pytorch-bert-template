@@ -77,7 +77,7 @@ Now, it just support the `NLC` (Natural Language Classification), `NLI` (Natural
 
 - [X] Rename trainer to agent
 - [ ] Finish the document
-- [ ] Finish the ParameterSearch Function.
+- [X] Finish the ParameterSearch Function.
 - [ ] Monitor and control the agent by Wechat
 - [ ] Realize the NER
 - [ ] Realize the Machine Comprehension

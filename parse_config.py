@@ -64,6 +64,9 @@ class ConfigParser:
         if self.all:
             self.config["data_loader"]["args"]["validation_split"] = 0.0
 
+        if self.debug_mode:
+            self.config["trainer"]["epochs"] = 2
+
     def initialize(self, name, module, *args, **kwargs):
         """
         finds a function handle with the name given as 'type' in config, and returns the
@@ -119,21 +122,22 @@ class ConfigParser:
     def log_dir(self):
         return self._log_dir
 
-    def update_config(self):
+    def update_config(self, parameter):
 
-        timestamp = datetime.now().strftime(r'%m%d_%H%M%S')
-        self._save_dir = self.base_save_dir / 'models' / self.exper_name / timestamp
-        self._log_dir = self.base_save_dir / 'log' / self.exper_name / timestamp
+        for key, value in parameter.items():
+            _set_by_path(self.config, key, value)
+
+
+        self._save_dir = self.base_save_dir / 'models' / self.exper_name / 'SearchResult'
+        self._log_dir = self.base_save_dir / 'log' / self.exper_name / 'SearchResult'
 
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
         # configure logging module
         setup_logging(self.log_dir)
-        self.log_levels = {
-            0: logging.WARNING,
-            1: logging.INFO,
-            2: logging.DEBUG
-        }
+
+        self.gradient_accumulation_steps = self.config['trainer']['gradient_accumulation_steps']
+
         return
 # helper functions used to update config dict with custom cli options
 
@@ -179,13 +183,12 @@ class MockConfigParser:
         self._config = read_json(self.cfg_fname)
 
         # set save_dir where trained model and log will be saved.
-        save_dir = Path(self.config['trainer']['save_dir'])
+        self.base_save_dir = Path(self.config['trainer']['save_dir'])
+        self.exper_name = self.config['processor']['args']['data_name'] + \
+                          '_' + self.config['arch']['type']
 
-        exper_name = self.config['processor']['args']['data_name'] + \
-            '_' + self.config['arch']['type']
-
-        self._save_dir = save_dir / 'models' / exper_name / 'mock'
-        self._log_dir = save_dir / 'log' / exper_name / 'mock'
+        self._save_dir = self.base_save_dir / 'models' / self.exper_name / 'mock'
+        self._log_dir  = self.base_save_dir / 'log' / self.exper_name / 'mock'
 
         self.save_dir.mkdir(parents=True, exist_ok=True)
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -198,10 +201,13 @@ class MockConfigParser:
             2: logging.DEBUG
         }
 
-        self.debug_mode = False
+        self.debug_mode = True
         self.all = False
         self.reset = False
         self.gradient_accumulation_steps = self.config['trainer']['gradient_accumulation_steps']
+
+        if self.debug_mode:
+            self.config["trainer"]["epochs"] = 2
 
     def initialize(self, name, module, *args, **kwargs):
         """
@@ -254,3 +260,21 @@ class MockConfigParser:
     @property
     def log_dir(self):
         return self._log_dir
+
+    def update_config(self, parameter):
+
+        for key, value in parameter.items():
+            _set_by_path(self.config, key, value)
+
+
+        self._save_dir = self.base_save_dir / 'models' / self.exper_name / 'SearchResult'
+        self._log_dir = self.base_save_dir / 'log' / self.exper_name / 'SearchResult'
+
+        self.log_dir.mkdir(parents=True, exist_ok=True)
+
+        # configure logging module
+        setup_logging(self.log_dir)
+
+        self.gradient_accumulation_steps = self.config['trainer']['gradient_accumulation_steps']
+
+        return

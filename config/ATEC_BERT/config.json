@@ -8,7 +8,7 @@
             "bert_vocab_file": "bert-base-chinese",
             "data_path":  "atec_nlp_sim_train.csv",
             "test_split": 0.2,
-            "max_len": 50,
+            "max_len": 63,
             "query_max_len": 20,
             "target_max_len": 20,
             "do_lower_case" : true
@@ -18,9 +18,9 @@
     "data_loader": {
         "type": "BertDataLoader",
         "args": {
-            "batch_size": 128,
+            "batch_size": 96,
             "shuffle": true,
-            "validation_split": 0.2,
+            "validation_split": 0.1,
             "num_workers": 2
         }
     },
@@ -36,7 +36,7 @@
     "optimizer": {
         "type": "BertAdam",
         "args":{
-                "lr"  : 5e-5,
+                "lr"  : 1e-4,
             "warmup"  : 0.1 ,
             "schedule": "warmup_linear"
         }
@@ -44,7 +44,7 @@
     "loss": {
         "type": "cross_entropy_loss",
         "args": {
-            "weights": [1.01, 4.01]
+            "weights": [0.223, 1]
         }
     },
 
@@ -53,15 +53,15 @@
     ],
 
     "trainer": {
-        "epochs": 100,
+        "epochs": 50,
 
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
         
         "monitor": "max val_F1",
-        "early_stop": 10,
-        "gradient_accumulation_steps": 2,
+        "early_stop": 5,
+        "gradient_accumulation_steps": 1,
         "tensorboardX": true
     }
 }

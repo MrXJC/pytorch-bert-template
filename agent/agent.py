@@ -93,12 +93,12 @@ class Agent(BaseAgent):
                 for i, mtr in enumerate(self.metrics):
                     metric_str += " {}: {:.6f}".format(mtr.__name__, now_metrics[i])
 
-                self.logger.debug('[{}] Train Epoch: {} [{}/{} ({:.0f}%)] Loss: {:.6f}{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) ,
+                self.logger.debug('[{}] Train Epoch: {} [{}/{} ({:.0f}%)] Loss: {:.6f}{}{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) ,
                     epoch,
                     batch_idx * self.data_loader.batch_size,
                     self.data_loader.n_samples,
                     100.0 * batch_idx / len(self.data_loader),
-                    loss.item(), metric_str))
+                    loss.item(), metric_str, ' lr: {}'.format(self.optimizer.get_lr()[0])))
                 #self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         log = {
@@ -181,9 +181,11 @@ class Agent(BaseAgent):
         }.items():
             self.logger.info('    {:15s}: {}'.format(str(key), value))
 
+
+        value = (total_test_metrics / len(self.test_data_loader)).tolist()
         # if detail:
-        #     return qs, ts, labels, outputs
-        return
+        #     return qs, ts, labels, outputs, {'test_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)}
+        return {'test_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)}
 
     def _predict(self, batch):
         batch = tuple(t.to(self.device) for t in batch)

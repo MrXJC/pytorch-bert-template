@@ -39,7 +39,7 @@ def train(config):
                       test_data_loader=test_data_loader)
 
     agent.train()
-    agent.test()
+    return agent.test()
 
 
 if __name__ == '__main__':

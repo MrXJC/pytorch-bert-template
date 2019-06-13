@@ -1,5 +1,6 @@
 from base import BaseBertProcessor
 
+
 class ATECProcessor(BaseBertProcessor):
     def __init__(self, logger, config, data_name, data_path, bert_vocab_file, max_len=50, query_max_len=20,
                  target_max_len=20, do_lower_case=True, test_split=0.0, training=True):
