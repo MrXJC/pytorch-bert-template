@@ -14,10 +14,21 @@ def train(config):
     logger = config.get_logger('train')
 
     # setup data_loader instances
-    processor = config.initialize('processor', module_processor, logger, config)
+    processor = config.initialize(
+        'processor', module_processor, logger, config)
 
-    data_loader = config.initialize('data_loader', module_data, processor.data_dir, mode = "train", debug= config.debug_mode)
-    test_data_loader = config.initialize('data_loader', module_data, processor.data_dir, mode = "test", debug= config.debug_mode)
+    data_loader = config.initialize(
+        'data_loader',
+        module_data,
+        processor.data_dir,
+        mode="train",
+        debug=config.debug_mode)
+    test_data_loader = config.initialize(
+        'data_loader',
+        module_data,
+        processor.data_dir,
+        mode="test",
+        debug=config.debug_mode)
 
     if config.all:
         valid_data_loader = test_data_loader
@@ -27,16 +38,21 @@ def train(config):
     # build model architecture, then print to console
     if config.bert_config_path:
         bert_config = BertConfig(config.bert_config_path)
-        model = config.initialize('arch', module_arch, config=bert_config, num_labels = processor.nums_label())
+        model = config.initialize(
+            'arch',
+            module_arch,
+            config=bert_config,
+            num_labels=processor.nums_label())
     else:
-        model = config.initialize_bert_model('arch', module_arch, num_labels = processor.nums_label())
+        model = config.initialize_bert_model(
+            'arch', module_arch, num_labels=processor.nums_label())
 
     logger.info(model)
     agent = Agent(model,
-                      config=config,
-                      data_loader=data_loader,
-                      valid_data_loader=valid_data_loader,
-                      test_data_loader=test_data_loader)
+                  config=config,
+                  data_loader=data_loader,
+                  valid_data_loader=valid_data_loader,
+                  test_data_loader=test_data_loader)
 
     agent.train()
     return agent.test()
@@ -57,11 +73,14 @@ if __name__ == '__main__':
     args.add_argument('-reset', '--reset', default=False, type=bool,
                       help='debug')
 
-    # custom cli options to modify configuration from default values given in json file.
+    # custom cli options to modify configuration from default values given in
+    # json file.
     CustomArgs = collections.namedtuple('CustomArgs', 'flags type target')
     options = [
-        CustomArgs(['--lr', '--learning_rate'], type=float, target=('optimizer', 'args', 'lr')),
-        CustomArgs(['--bs', '--batch_size'], type=int, target=('data_loader', 'args', 'batch_size')),
+        CustomArgs(['--lr', '--learning_rate'], type=float,
+                   target=('optimizer', 'args', 'lr')),
+        CustomArgs(['--bs', '--batch_size'], type=int,
+                   target=('data_loader', 'args', 'batch_size')),
         CustomArgs(['--ep', '--epoch'], type=int, target=('trainer', 'epochs'))
     ]
 

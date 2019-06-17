@@ -94,6 +94,9 @@ class BaseAgent:
                     # check whether model performance improved or not, according to specified metric(mnt_metric)
                     improved = (self.mnt_mode == 'min' and log[self.mnt_metric] <= self.mnt_best) or \
                                (self.mnt_mode == 'max' and log[self.mnt_metric] >= self.mnt_best)
+
+                    improved = improved and (log[self.mnt_metric] > 1e-6)
+
                 except KeyError:
                     self.logger.warning("Warning: Metric '{}' is not found. "
                                         "Model performance monitoring is disabled.".format(self.mnt_metric))
@@ -151,7 +154,8 @@ class BaseAgent:
             'config': self.config
         }
         filename = str(self.checkpoint_dir / 'checkpoint-epoch-now.pth')
-        torch.save(state, filename)
+        if self.config.search_mode == 'disable':
+            torch.save(state, filename)
 
         # if epoch % self.save_period == 0:
         #     filename = str(self.checkpoint_dir / 'checkpoint-epoch-{}.pth').format(epoch)

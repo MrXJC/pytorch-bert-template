@@ -98,10 +98,9 @@ if __name__ == '__main__':
     # random_search(config, parameter_dict, 2)
     # grid_search(config, parameter_dict)
 
-    args = args.parse_args()
-    if args.searchMode == 'random':
+    if config.search_mode == 'random':
         random_search(config, parameter_dict, 10)
-    elif args.searchMode == 'grid':
+    elif config.search_mode == 'grid':
         grid_search(config, parameter_dict)
     else:
-        print(f"{args.searchMode} is the unknown mode of ParameterSearch ")
+        print(f"{config.search_mode} is the unknown mode of ParameterSearch ")

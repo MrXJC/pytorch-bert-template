@@ -12,6 +12,7 @@ from abc import abstractmethod
 class BaseBertProcessor:
     def __init__(self, logger, config, data_name, data_path, bert_vocab_file, max_len = 50, query_max_len=20,
                  target_max_len=20, do_lower_case = True, test_split=0.0, training=True):
+        self.logger = logger
         self.reset = config.reset
         self._data_dir = Path('data') / data_name
 
@@ -91,8 +92,6 @@ class BaseBertProcessor:
             'segment_ids': [],
             'label_id': []}
 
-        label_map = {label: i for i, label in enumerate(self.get_labels())}
-
         with open(filename, 'r') as fe:
             for idx, line in enumerate(fe):
                 if idx < self.skip_row:
@@ -102,10 +101,10 @@ class BaseBertProcessor:
                 features['input_ids'].append(input_ids)
                 features['input_mask'].append(input_mask)
                 features['segment_ids'].append(segment_ids)
-                features['label_id'].append(label_map[label_id])
+                features['label_id'].append(label_id)
                 if idx % 10000 == 0:
-                    print(idx, input_ids[:30], input_mask[:30], segment_ids[:30], label_id)
-                    print(self.tokenizer.convert_ids_to_tokens(input_ids))
+                    self.logger.debug(idx, input_ids[:30], input_mask[:30], segment_ids[:30], label_id)
+                    self.logger.debug(self.tokenizer.convert_ids_to_tokens(input_ids))
 
         return features, idx - self.skip_row + 1
 
@@ -159,7 +158,8 @@ class BaseBertProcessor:
         assert len(input_mask) == self.max_len
         assert len(segment_ids) == self.max_len
 
-        label_id = label
+        label_map = {label: i for i, label in enumerate(self.get_labels())}
+        label_id = label_map[label]
 
         return input_ids, input_mask, segment_ids, label_id
 
