@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import torch
+import torch.nn.functional as F
 from base import BaseAgent
 import agent.loss as module_loss
 import agent.metric as module_metric
@@ -164,8 +165,8 @@ class Agent(BaseAgent):
         total_test_loss = 0
         total_test_metrics = np.zeros(len(self.metrics))
         with torch.no_grad():
-            # if detail:
-            #     qs, ts, labels, outputs = [], [], [], []
+            if detail:
+                qts, labels, outputs = [], [], []
             for batch_idx, batch in enumerate(self.test_data_loader):
 
                 output, label_ids = self._predict(batch)
@@ -173,8 +174,9 @@ class Agent(BaseAgent):
                 loss = self.loss(output, label_ids)
                 total_test_loss += loss.item()
                 total_test_metrics += self._eval_metrics(output, label_ids)
-                # if detail:
-                #     qs.extend(q), ts.extend(t), labels.extend(label), outputs.extend(output)
+                if detail:
+                    qts.extend(batch[0]), labels.extend(batch[3]), outputs.extend(
+                        F.softmax(output, dim=-1))
 
         for key, value in {
             'test_loss': total_test_loss / len(self.test_data_loader),
@@ -182,10 +184,10 @@ class Agent(BaseAgent):
         }.items():
             self.logger.info('    {:15s}: {}'.format(str(key), value))
 
-
         value = (total_test_metrics / len(self.test_data_loader)).tolist()
-        # if detail:
-        #     return qs, ts, labels, outputs, {'test_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)}
+
+        if detail:
+            return qts, labels, outputs, {'test_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)}
         return {'test_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)}
 
     def _predict(self, batch):

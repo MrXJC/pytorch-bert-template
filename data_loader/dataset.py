@@ -14,6 +14,7 @@ class BertDataset:
 
             self.input_ids, self.input_mask, self.segment_ids, self.label_id = features['input_ids'], \
                 features['input_mask'], features['segment_ids'], features['label_id']
+
             if debug:
                 self.input_ids, self.input_mask, self.segment_ids, self.label_id = \
                     self.input_ids[:DEBUG_INDEX], self.input_mask[:DEBUG_INDEX], self.segment_ids[:DEBUG_INDEX], self.label_id[:DEBUG_INDEX]

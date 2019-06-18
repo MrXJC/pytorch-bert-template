@@ -77,7 +77,7 @@ class BaseBertProcessor:
             return
         print(f"Begin to build eval dataset")
         if os.path.exists(filename):
-            features = self.handle_from_file_bert(
+            features, _ = self.handle_from_file_bert(
                 filename)
             with open(str(self._data_dir / 'eval.pkl'), "wb") as f:
                 pickle.dump(features, f)
@@ -103,8 +103,8 @@ class BaseBertProcessor:
                 features['segment_ids'].append(segment_ids)
                 features['label_id'].append(label_id)
                 if idx % 10000 == 0:
-                    self.logger.debug(idx, input_ids[:30], input_mask[:30], segment_ids[:30], label_id)
-                    self.logger.debug(self.tokenizer.convert_ids_to_tokens(input_ids))
+                    print(idx, input_ids[:30], input_mask[:30], segment_ids[:30], label_id)
+                    print(self.tokenizer.convert_ids_to_tokens(input_ids))
 
         return features, idx - self.skip_row + 1
 

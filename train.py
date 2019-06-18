@@ -8,7 +8,7 @@ from pytorch_pretrained_bert.modeling import BertConfig
 from agent import Agent
 
 
-# /opt/xujc/Projects/PycharmProjects/DeepLearning/NLP/Bert/BertESIM
+# ~/Projects/PycharmProjects/DeepLearning/NLP/Bert/BertESIM
 
 def train(config):
     logger = config.get_logger('train')
