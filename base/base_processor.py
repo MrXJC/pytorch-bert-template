@@ -109,16 +109,15 @@ class BaseBertProcessor:
         return features, idx - self.skip_row + 1
 
     def handle_bert_on_batch(self, qs, ts):
-        input_ids, input_mask, segment_ids, label_id = [], [], [], []
+        input_ids, input_mask, segment_ids = [], [], []
         for q, t in zip(qs, ts):
-            _input_ids, _input_mask, _segment_ids, _label_id = self.handle_bert(q, t, 0)
+            _input_ids, _input_mask, _segment_ids, _ = self.handle_bert(q, t)
             input_ids.append(_input_ids)
             input_mask.append(_input_mask)
             segment_ids.append(_segment_ids)
-            label_id.append(_label_id)
-        return input_ids, input_mask, segment_ids, label_id
+        return input_ids, input_mask, segment_ids
 
-    def handle_bert(self, q, t, label):
+    def handle_bert(self, q, t, label_id=None):
 
         tokens_a = self.tokenizer.tokenize(q)  # 分词
 
@@ -159,7 +158,8 @@ class BaseBertProcessor:
         assert len(segment_ids) == self.max_len
 
         label_map = {label: i for i, label in enumerate(self.get_labels())}
-        label_id = label_map[label]
+        if label_id:
+            label_id = label_map[label_id]
 
         return input_ids, input_mask, segment_ids, label_id
 

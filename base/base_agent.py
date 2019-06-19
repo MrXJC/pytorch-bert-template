@@ -61,8 +61,10 @@ class BaseAgent:
         """
 
         self.config.save()
+        model_to_save = self.model.module if hasattr(
+            self.model, 'module') else self.model
         with open(str(self.checkpoint_dir / 'BertConfig.json'), 'w') as f:
-            f.write(self.model.config.to_json_string())
+            f.write(model_to_save.config.to_json_string())
 
         not_improved_count = 0
         for epoch in range(self.start_epoch, self.epochs + 1):

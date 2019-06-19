@@ -131,7 +131,6 @@ class ConfigParser:
         for key, value in parameter.items():
             _set_by_path(self.config, key, value)
 
-
         self._save_dir = self.base_save_dir / 'models' / self.exper_name / 'SearchResult'
         self._log_dir = self.base_save_dir / 'log' / self.exper_name / 'SearchResult'
 
@@ -273,7 +272,6 @@ class MockConfigParser:
 
         for key, value in parameter.items():
             _set_by_path(self.config, key, value)
-
 
         self._save_dir = self.base_save_dir / 'models' / self.exper_name / 'SearchResult'
         self._log_dir = self.base_save_dir / 'log' / self.exper_name / 'SearchResult'

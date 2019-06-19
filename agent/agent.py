@@ -39,6 +39,7 @@ class Agent(BaseAgent):
         if config.resume is not None:
             self.best_path = config.resume
             self._resume_checkpoint(config.resume)
+        self.model.eval()
 
     def _eval_metrics(self, outputs, labels):
         outputs = outputs.detach().cpu().numpy()
@@ -175,7 +176,7 @@ class Agent(BaseAgent):
                 total_test_loss += loss.item()
                 total_test_metrics += self._eval_metrics(output, label_ids)
                 if detail:
-                    qts.extend(batch[0]), labels.extend(batch[3]), outputs.extend(
+                    qts.extend(batch[0]), labels.extend(label_ids), outputs.extend(
                         F.softmax(output, dim=-1))
 
         for key, value in {
@@ -193,12 +194,13 @@ class Agent(BaseAgent):
     def _predict(self, batch):
         batch = tuple(t.to(self.device) for t in batch)
         input_ids, input_mask, segment_ids, label_ids = batch
-        output = self.model(input_ids, input_mask, segment_ids)
+        outputs = self.model(input_ids, input_mask, segment_ids)
         label_ids = label_ids.view(-1)
-        return output, label_ids
+        return outputs, label_ids
 
     def predict(self, batchs):
         batch = tuple(torch.LongTensor(t).to(self.device) for t in batchs)
-        input_ids, input_mask, segment_ids, _ = batch
+        input_ids, input_mask, segment_ids = batch
         outputs = self.model(input_ids, input_mask, segment_ids)
-        return outputs, np.argmax(outputs.detach().cpu().numpy(), axis=1)
+        print(outputs)
+        return outputs.detach().cpu().numpy(), np.argmax(outputs.detach().cpu().numpy(), axis=1)
