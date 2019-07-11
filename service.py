@@ -13,7 +13,7 @@ json = FlaskJSON(app)
 
 
 def predict(q, t):
-    batch = processor.handle_bert_on_batch([q], [t])
+    batch = processor.handle_bert_on_batch(q, t)
     return agent.predict(batch)
 
 
@@ -29,7 +29,7 @@ def test():
         _, label = predict(
             data['query'],
             data['target'])
-        response = {'label': int(label[0])}
+        response = {'label': list(map(int, label))}
     except (KeyError, TypeError, ValueError):
         raise JsonError(description='Invalid value.')
     return response
