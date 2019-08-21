@@ -51,7 +51,7 @@ fastai==1.0.46
 fastcache==1.0.2
 fastprogress==0.1.21
 filelock==2.0.13
-Flask==0.12.2
+Flask==1.0
 Flask-Cors==3.0.3
 Flask-JSON==0.3.3
 gast==0.2.2
