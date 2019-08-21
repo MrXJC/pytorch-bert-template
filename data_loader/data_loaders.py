@@ -12,6 +12,7 @@ class BertDataLoader(BaseDataLoader):
             validation_split = 0.0
             self.dataset = BertDataset(str(data_dir/"test.pkl"), debug)
         elif mode == "eval":
+            validation_split = 0.0
             self.dataset = BertDataset(str(data_dir/"eval.pkl"), debug)
 
         print(f"{mode} : {self.dataset.__len__()}")
