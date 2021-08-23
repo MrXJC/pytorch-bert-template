@@ -90,7 +90,7 @@ jupyter-highlight-selected-word==0.2.0
 jupyter-latex-envs==1.4.6
 jupyter-nbextensions-configurator==0.4.1
 jupyter-themer==0.4.0
-jupyterlab==0.31.5
+jupyterlab==1.2.21
 jupyterlab-launcher==0.10.2
 jupytext==1.1.2
 Keras-Applications==1.0.7
